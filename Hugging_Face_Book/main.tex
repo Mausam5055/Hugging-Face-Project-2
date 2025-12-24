@@ -1,0 +1,73 @@
+\documentclass[11pt,fleqn,oneside]{book}
+
+\input{structure} % Load the structure.tex file
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\begin{titlepage}
+	\begin{tikzpicture}[remember picture, overlay]
+		% Background color bar
+		\fill[hfyellow] (current page.north west) rectangle ([xshift=4cm]current page.south west);
+		
+		% Decorative geometry
+		\node[opacity=0.1, rotate=30] at ([xshift=8cm, yshift=-5cm]current page.north west) {
+			\begin{tikzpicture}
+				\node[draw, circle, minimum size=3cm, line width=2pt] (A) {};
+				\node[draw, rectangle, minimum size=2cm, line width=2pt, below right=1cm of A] (B) {};
+				\draw[line width=1pt] (A) -- (B);
+			\end{tikzpicture}
+		};
+
+        % Title
+		\node[anchor=north west, inner sep=0pt] at ([xshift=5cm, yshift=-8cm]current page.north west) {
+			\begin{minipage}{0.7\paperwidth}
+				\raggedright
+				{\fontsize{40}{50}\selectfont \bfseries \color{hfdark} Hugging Face\\[10pt] \fontsize{30}{40}\selectfont \color{gray} The Comprehensive Guide}\\[1cm]
+				{\Large \textit{From Transformers to Pipelines: A Visual Journey}}\\[2cm]
+			\end{minipage}
+		};
+
+		% Author
+		\node[anchor=south west, inner sep=0pt] at ([xshift=5cm, yshift=4cm]current page.south west) {
+			\begin{minipage}{0.6\paperwidth}
+				{\huge \bfseries Author: Mausam Kar}\\[0.5cm]
+				{\large Written for Beginners \& Practitioners}
+			\end{minipage}
+		};
+		
+		% "Logo" or Visual Element
+        \node[anchor=north east] at ([xshift=-2cm, yshift=-2cm]current page.north east) {
+             \begin{tikzpicture}
+                \node[circle, fill=hfdark, minimum size=2cm, text=white, font=\bfseries] {HF};
+             \end{tikzpicture}
+        };
+
+	\end{tikzpicture}
+\end{titlepage}
+
+%----------------------------------------------------------------------------------------
+%	FRONT MATTER
+%----------------------------------------------------------------------------------------
+
+\tableofcontents
+
+%----------------------------------------------------------------------------------------
+%	MAIN CONTENT
+%----------------------------------------------------------------------------------------
+
+\mainmatter
+
+\include{content/chapter1}
+\include{content/chapter2}
+\include{content/chapter3}
+\include{content/chapter4}
+\include{content/chapter5}
+
+% Future chapters can be included here
+% \include{content/chapter2}
+
+\end{document}

@@ -1,0 +1,95 @@
+\chapter{Getting Started with Hugging Face}
+
+\section{What is Hugging Face?}
+Hugging Face is often referred to as the \textbf{``GitHub of Machine Learning''}. It is an open-source platform that provides tools to build, train, and deploy machine learning models, primarily centered around \textit{Natural Language Processing (NLP)}.
+
+At its core, Hugging Face democratizes AI by making state-of-the-art models accessible to everyone through the \texttt{transformers} library.
+
+\begin{infobox}[title=Key Definition: Transformers]
+    \textbf{Transformers} are a type of deep learning model designed to process sequential data, such as text. Introduced by Google in 2017 (in the paper \textit{"Attention is All You Need"}), they have revolutionized NLP by allowing models to understand context better than previous architectures like RNNs.
+\end{infobox}
+
+\section{The Pipeline Abstraction}
+One of the easiest ways to use Hugging Face is through the \texttt{pipeline()} function. It abstracts away the complex code required to process text and generate predictions.
+
+\begin{conceptbox}
+    Think of a \textbf{Pipeline} as a factory assembly line. You pour raw material (text) into one end, and the finished product (sentiment, translation, summary) comes out the other end. The pipeline handles all the machinery inside.
+\end{conceptbox}
+
+\subsection{How it Works}
+The pipeline consists of three main steps:
+\begin{enumerate}
+    \item \textbf{Preprocessing}: Converting text into numbers (Tokenization).
+    \item \textbf{Inference}: Running the numbers through the Model.
+    \item \textbf{Post-processing}: Converting the model's output back into human-readable text.
+\end{enumerate}
+
+\begin{center}
+    \begin{tikzpicture}[
+        node distance=1.5cm,
+        auto,
+        block/.style={
+            rectangle, 
+            draw=hfdark, 
+            thick, 
+            fill=white, 
+            text width=3cm, 
+            align=center, 
+            rounded corners, 
+            minimum height=1.2cm, 
+            drop shadow
+        },
+        arrow/.style={
+            -{Latex[scale=1.2]}, 
+            thick, 
+            color=hfblue
+        }
+    ]
+        % Nodes
+        \node[block, fill=hfyellow!20] (input) {Raw Text\\ \textit{"I love AI!"}};
+        \node[block, right=of input] (tokenizer) {Tokenizer\\ \small(Text $\to$ IDs)};
+        \node[block, right=of tokenizer, fill=hfblue!10] (model) {Model\\ \small(Inference)};
+        \node[block, below=of model] (post) {Post-Processing\\ \small(Logits $\to$ Labels)};
+        \node[block, left=of post, fill=green!10] (output) {Output\\ \textit{"Positive"}};
+
+        % Arrows
+        \draw[arrow] (input) -- (tokenizer);
+        \draw[arrow] (tokenizer) -- (model);
+        \draw[arrow] (model) -- (post);
+        \draw[arrow] (post) -- (output);
+        
+        % Background
+        \begin{scope}[on background layer]
+            \node[fit=(input)(tokenizer)(model)(post)(output), draw=gray, dashed, rounded corners, label=above:\textbf{The NLP Pipeline Flow}] {};
+        \end{scope}
+    \end{tikzpicture}
+\end{center}
+
+\section{Your First Code Example}
+Let's see how simple it is to use Python to analyze the sentiment of a sentence.
+
+\begin{lstlisting}[language=Python, caption=Basic Sentiment Analysis]
+from transformers import pipeline
+
+# 1. Initialize the pipeline
+classifier = pipeline("sentiment-analysis")
+
+# 2. Pass text to the pipeline
+result = classifier("Hugging Face makes AI easy!")
+
+# 3. Print the result
+print(result)
+# Output: [{'label': 'POSITIVE', 'score': 0.99}]
+\end{lstlisting}
+
+\begin{notebox}
+    By default, the pipeline downloads a default model (like \texttt{distilbert}). You can specify other models if you need specific capabilities, such as multi-lingual support.
+\end{notebox}
+
+\section{Summary}
+In this chapter, we learned:
+\begin{itemize}
+    \item \textbf{Hugging Face} is a platform for sharing and using ML models.
+    \item \textbf{Pipelines} simplify the process of using these models.
+    \item We can write a sentiment analysis script in just 3 lines of code!
+\end{itemize}

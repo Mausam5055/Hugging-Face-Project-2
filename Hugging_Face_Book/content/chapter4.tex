@@ -1,0 +1,81 @@
+\chapter{Fine-Tuning Your First Model}
+\label{chap:finetuning}
+
+\section{The Concept of Transfer Learning}
+Traditional machine learning required training models from scratch on specific datasets. In the era of large language models, this is inefficient.
+
+\textbf{Transfer Learning} allows us to take a model trained on a massive generic corpus (like Wikipedia) and "fine-tune" it on a small, task-specific dataset (like your company's emails).
+
+\begin{infobox}[title=The Head Analogy]
+    Imagine the model as a body and a head.
+    \begin{itemize}
+        \item \textbf{Body}: Contains general language understanding (grammar, context). This is Frozen or fine-tuned slightly.
+        \item \textbf{Head}: The final layer responsible for the output (e.g., "Positive/Negative"). This is \textbf{randomly initialized} and trained from scratch.
+    \end{itemize}
+\end{infobox}
+
+\section{The Trainer API}
+The \texttt{Trainer} class is a high-level API that abstracts away the complex training loop of PyTorch (optimizers, backward pass, gradient accumulation).
+
+\subsection{1. Computing Metrics}
+By default, the Trainer only logs the loss. To know if your model is actually working (Accuracy, F1), we need a \texttt{compute\_metrics} function.
+
+\begin{lstlisting}[language=Python]
+import numpy as np
+import evaluate
+
+metric = evaluate.load("accuracy")
+
+def compute_metrics(eval_pred):
+    logits, labels = eval_pred
+    predictions = np.argmax(logits, axis=-1)
+    return metric.compute(predictions=predictions, references=labels)
+\end{lstlisting}
+
+\subsection{2. Training Arguments}
+These control "how" the model learns.
+
+\begin{lstlisting}[language=Python, caption=Essential Hyperparameters]
+from transformers import TrainingArguments
+
+args = TrainingArguments(
+    output_dir="./results",
+    # Evaluation strategy: evaluate every epoch
+    evaluation_strategy="epoch", 
+    # Learning rate: usually very small for Transfer Learning
+    learning_rate=2e-5,
+    per_device_train_batch_size=16,
+    num_train_epochs=3,
+    # Weight decay: regularization technique
+    weight_decay=0.01,
+)
+\end{lstlisting}
+
+\subsection{3. Launching Training}
+Combine the model, args, data, and metrics into the Trainer.
+
+\begin{lstlisting}[language=Python]
+from transformers import Trainer
+
+trainer = Trainer(
+    model=model,
+    args=args,
+    train_dataset=tokenized_datasets["train"],
+    eval_dataset=tokenized_datasets["test"],
+    tokenizer=tokenizer,
+    compute_metrics=compute_metrics,
+)
+
+trainer.train()
+\end{lstlisting}
+
+\section{Checkpoints and Resuming}
+Training can take hours. What if your computer crashes? The Trainer defines \texttt{save\_steps} to save checkpoints automatically.
+
+To resume training from the latest checkpoint:
+\begin{lstlisting}[language=Python]
+trainer.train(resume_from_checkpoint=True)
+\end{lstlisting}
+
+\section{Summary}
+Fine-tuning adapts a powerful general model to your specific needs. The \texttt{Trainer} API simplifies the training loop, evaluation, and checkpoint management, letting you focus on the data and the results.

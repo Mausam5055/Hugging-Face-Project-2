@@ -1,0 +1,136 @@
+\chapter{Models and Tokenizers}
+\label{chap:models_tokenizers}
+
+\section{Introduction}
+While the \texttt{pipeline} API is powerful, it is often a "black box." To truly master Hugging Face, you must understand the two fundamental components that power every NLP application: \textbf{Tokenizers} and \textbf{Models}.
+
+This chapter delves into the \texttt{AutoClasses}, the process of tokenization, and how to manage model configurations and weights.
+
+\section{The AutoClasses}
+Hugging Face provides a set of classes designed to automatically select the correct architecture for a given checkpoint. This design pattern makes your code incredibly flexible and portable.
+
+\begin{infobox}[title=Key Classes]
+    \begin{itemize}
+        \item \texttt{AutoTokenizer}: Handles text preprocessing.
+        \item \texttt{AutoModel}: Loads the base model (transformer body).
+        \item \texttt{AutoConfig}: Manages technical parameters (layers, hidden size).
+    \end{itemize}
+\end{infobox}
+
+\section{Tokenizers: Speaking the Language of Machines}
+Deep Learning models cannot process raw strings. They require numerical input. The tokenizer bridges this gap by breaking text into smaller units called \textit{tokens} and mapping them to integers (\textit{Input IDs}).
+
+\subsection{ The Tokenization Pipeline}
+Tokenization isn't just splitting by spaces. It involves a sophisticated pipeline:
+
+\begin{center}
+    \begin{tikzpicture}[
+        node distance=1.5cm, 
+        auto,
+        process/.style={
+            rectangle, 
+            draw=hfblue,
+            thick,
+            fill=white,
+            minimum width=2.5cm,
+            minimum height=1cm,
+            align=center,
+            rounded corners,
+            drop shadow
+        },
+        arrow/.style={-{Latex}, thick, color=hfdark}
+    ]
+        \node[process, fill=gray!5] (raw) {"HuggingFace is cool"};
+        \node[process, right=of raw] (norm) {normalization\\ \small(lower, accents)};
+        \node[process, right=of norm] (pre) {pre-tokenization\\ \small(split words)};
+        \node[process, below=of pre] (model) {model processing\\ \small(subwords)};
+        \node[process, left=of model] (ids) {[101, 7592, 2483, 2003, 4658, 102]};
+        
+        \draw[arrow] (raw) -- (norm);
+        \draw[arrow] (norm) -- (pre);
+        \draw[arrow] (pre) -- (model);
+        \draw[arrow] (model) -- (ids);
+        
+    \end{tikzpicture}
+\end{center}
+
+\begin{conceptbox}
+    \textbf{Subword Tokenization}: Algorithms like BPE (Byte-Pair Encoding) or WordPiece solve the "unknown token" problem. They split rare words into common subwords.
+    
+    Example: \texttt{"unfriendly"} $\rightarrow$ \texttt{"un", "friend", "ly"}
+\end{conceptbox}
+
+\section{Using AutoTokenizer}
+Here is a complete example of loading a tokenizer and processing a batch of sentences.
+
+\begin{lstlisting}[language=Python, caption=Processing a Batch]
+from transformers import AutoTokenizer
+
+# 1. Load a pre-trained tokenizer
+checkpoint = "bert-base-cased"
+tokenizer = AutoTokenizer.from_pretrained(checkpoint)
+
+# 2. Define a batch of sentences
+batch = [
+    "Hello, world!",
+    "Hugging Face course is amazing."
+]
+
+# 3. Tokenize
+# padding: pad short sequences to the longest in batch
+# truncation: cut sequences longer than model max length
+inputs = tokenizer(
+    batch, 
+    padding=True, 
+    truncation=True, 
+    return_tensors="pt" # Return PyTorch tensors
+)
+
+print(inputs)
+# Outputs dictionary with 'input_ids', 'attention_mask'
+\end{lstlisting}
+
+\section{Models and Configurations}
+The \texttt{AutoModel} class loads the weights of the network. However, sometimes you want to inspect or modify the architecture before loading the weights. This is where \texttt{AutoConfig} comes in.
+
+\begin{lstlisting}[language=Python, caption=Customizing Configuration]
+from transformers import AutoConfig, AutoModel
+
+# Load the default configuration
+config = AutoConfig.from_pretrained("bert-base-uncased")
+
+# Inspect a parameter
+print(config.hidden_size) # 768
+
+# Modify it (e.g., for a smaller custom model)
+config.num_hidden_layers = 10
+
+# Initialize a model with this config (Random weights!)
+model = AutoModel.from_config(config)
+\end{lstlisting}
+
+\begin{notebox}
+    Initializing from config loads \textbf{random weights}. You must use \texttt{from\_pretrained()} to load trained knowledge.
+\end{notebox}
+
+\section{Saving Your Work}
+After fine-tuning or modifying a model, you need to save it. Hugging Face makes this easy with \texttt{save\_pretrained}.
+
+\begin{lstlisting}[language=Python]
+# Save tokenizer and model to a local directory
+save_directory = "./my_saved_model"
+
+tokenizer.save_pretrained(save_directory)
+model.save_pretrained(save_directory)
+
+# You can now load from this directory!
+loaded_model = AutoModel.from_pretrained(save_directory)
+\end{lstlisting}
+
+\section{Summary}
+In this chapter, we explored:
+\begin{itemize}
+    \item How \textbf{Tokenizers} transform text into input IDs using algorithms like BPE.
+    \item The role of \textbf{AutoConfig} in defining model architecture.
+    \item How to \textbf{Save and Load} models locally, ensuring your work is never lost.
+\end{itemize}

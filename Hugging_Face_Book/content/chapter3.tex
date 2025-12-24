@@ -1,0 +1,97 @@
+\chapter{The Datasets Library}
+\label{chap:datasets}
+
+\section{Introduction}
+Good models perform poorly on bad data. The Hugging Face \texttt{datasets} library is the standard tool for loading, processing, and sharing datasets in the NLP ecosystem. It is designed to be efficient, developer-friendly, and compatible with NumPy, Pandas, and PyTorch/TensorFlow.
+
+\section{Loading Data}
+Hugging Face hosts thousands of datasets on the Hub, but you will often work with your own local files.
+
+\subsection{From the Hub}
+\begin{lstlisting}[language=Python]
+from datasets import load_dataset
+
+# Load a benchmark dataset (GLUE)
+glue_dataset = load_dataset("glue", "mrpc", split="train")
+\end{lstlisting}
+
+\subsection{From Local Files}
+The library supports loading directly from CSV, JSON, and text files.
+
+\begin{lstlisting}[language=Python, caption=Loading Local Files]
+# Load from a single CSV
+data_files = {"train": "path/to/train.csv", "test": "path/to/test.csv"}
+dataset = load_dataset("csv", data_files=data_files)
+
+# Load from JSON Lines
+json_dataset = load_dataset("json", data_files="my_data.jsonl")
+\end{lstlisting}
+
+\section{Inspecting Data with Pandas}
+Sometimes you just want to "see" your data. The \texttt{datasets} library integrates seamlessly with Pandas.
+
+\begin{lstlisting}[language=Python, caption=Converting to Pandas DataFrame]
+import pandas as pd
+
+# Convert to pandas
+df = glue_dataset.to_pandas()
+
+# Show the first 5 rows
+print(df.head())
+\end{lstlisting}
+
+\begin{infobox}[title=Efficiency Note]
+    The conversion to Pandas is purely in-memory. For massive datasets, you should avoid this or converting only a small slice.
+\end{infobox}
+
+\section{Processing Data: Slicing and Mapping}
+\subsection{Slicing and Shuffling}
+You can manipulate datasets just like python lists context.
+
+\begin{lstlisting}[language=Python]
+# Shuffle the dataset
+shuffled = dataset.shuffle(seed=42)
+
+# Select the first 1000 examples
+small_dataset = dataset.select(range(1000))
+\end{lstlisting}
+
+\subsection{The Map Function}
+The core powerhouse of the library is \texttt{.map()}. It allows you to apply processing functions (like tokenization) to every element.
+
+\begin{conceptbox}
+    \textbf{Why \texttt{batched=True}?}
+    
+    Tokenizers are written in Rust and can process lists of texts much faster than single strings thanks to parallelism. Enabling batching can speed up your processing by 10x or 100x.
+\end{conceptbox}
+
+\begin{lstlisting}[language=Python, caption=High-Performance Tokenization]
+def tokenize_function(examples):
+    # 'examples["text"]' is a LIST of strings
+    return tokenizer(examples["text"], truncation=True)
+
+# Apply to the whole dataset
+tokenized_dataset = dataset.map(tokenize_function, batched=True)
+\end{lstlisting}
+
+\section{Streaming: Handling Big Data}
+What if your dataset is 1TB and your laptop has 16GB of RAM? Enter \textbf{Streaming}.
+
+Streaming allows you to iterate over a dataset without downloading it to disk. It streams data over the network on-the-fly.
+
+\begin{lstlisting}[language=Python]
+# This returns an IterableDataset
+c4 = load_dataset("c4", "en", streaming=True)
+
+# Get the first example
+print(next(iter(c4)))
+\end{lstlisting}
+
+\section{Summary}
+We have covered:
+\begin{itemize}
+    \item Loading data from the Hub and local CSV/JSON files.
+    \item Interoperating with Pandas for visualization.
+    \item Using \texttt{map()} for efficient preprocessing.
+    \item Handling massive datasets with Streaming.
+\end{itemize}

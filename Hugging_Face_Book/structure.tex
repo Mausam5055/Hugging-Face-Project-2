@@ -1,0 +1,137 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Professional Book Structure
+% LaTeX Template
+%
+% This file defines the structure and style of the book.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\usepackage[top=3cm,bottom=3cm,left=3cm,right=3cm,headsep=10pt,a4paper]{geometry} % Page margins
+
+\usepackage[english]{babel} % English language
+\usepackage[utf8]{inputenc} % Encoding
+\usepackage[T1]{fontenc} % Font encoding
+\usepackage{lmodern} % Modern font
+%\usepackage{avant} % Use Avant Garde font for headings if desired
+
+\usepackage{graphicx} % Images
+\usepackage{enumitem} % Customized lists
+\usepackage{booktabs} % Professional tables
+\usepackage{xcolor} % Custom colors
+
+%----------------------------------------------------------------------------------------
+%	COLORS
+%----------------------------------------------------------------------------------------
+
+\definecolor{hfyellow}{RGB}{255, 204, 0} % Approx Hugging Face Yellow
+\definecolor{hfdark}{RGB}{34, 34, 34}    % Dark Gray
+\definecolor{hfblue}{RGB}{66, 133, 244}  % Blue accent
+\definecolor{codebg}{RGB}{245, 245, 245} % Light gray for code blocks
+
+%----------------------------------------------------------------------------------------
+%	CODE SNIPPETS (LISTINGS)
+%----------------------------------------------------------------------------------------
+
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue}\bfseries,
+  commentstyle=\color{green!60!black},
+  stringstyle=\color{red},
+  backgroundcolor=\color{codebg},
+  frame=single,
+  rulecolor=\color{gray!30},
+  breaklines=true,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  captionpos=b,
+  tabsize=2,
+  showstringspaces=false
+}
+
+%----------------------------------------------------------------------------------------
+%	TIKZ & DIAGRAMS
+%----------------------------------------------------------------------------------------
+
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows.meta, positioning, shadows, backgrounds, fit}
+
+%----------------------------------------------------------------------------------------
+%	CUSTOM BOXES (TCOLORBOX)
+%----------------------------------------------------------------------------------------
+
+\usepackage{tcolorbox}
+
+% Definition Box
+\newtcolorbox{infobox}[1][]{
+  colback=blue!5!white,
+  colframe=hfblue,
+  fonttitle=\bfseries,
+  title=Definition,
+  boxrule=1pt,
+  sharp corners=south,
+  #1
+}
+
+% Concept/Explanation Box
+\newtcolorbox{conceptbox}[1][]{
+  colback=hfyellow!10!white,
+  colframe=orange!80!black,
+  fonttitle=\bfseries,
+  title=Concept,
+  boxrule=1pt,
+  sharp corners=south,
+  #1
+}
+
+% Warning/Note Box
+\newtcolorbox{notebox}[1][]{
+  colback=red!5!white,
+  colframe=red!75!black,
+  fonttitle=\bfseries,
+  title=Note,
+  boxrule=1pt,
+  sharp corners=south,
+  #1
+}
+
+
+%----------------------------------------------------------------------------------------
+%	HEADERS AND FOOTERS
+%----------------------------------------------------------------------------------------
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\setlength{\headheight}{15pt} % Fix warning
+\fancyhf{}
+\fancyhead[L]{\nouppercase{\leftmark}} % Chapter name on the left
+\fancyhead[R]{\thepage} % Page number on the right
+\renewcommand{\headrulewidth}{0.5pt}
+
+%----------------------------------------------------------------------------------------
+%	TITLES
+%----------------------------------------------------------------------------------------
+
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+  {\normalfont\huge\bfseries\color{hfdark}}
+  {\chaptertitlename\ \thechapter}
+  {20pt}
+  {\Huge}
+
+%----------------------------------------------------------------------------------------
+%	HYPERLINKS
+%----------------------------------------------------------------------------------------
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=hfblue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Hugging Face Book},
+    pdfpagemode=FullScreen,
+}

@@ -1,0 +1,77 @@
+\chapter{The Hugging Face Hub}
+\label{chap:hub}
+
+\section{The GitHub of Machine Learning}
+The Hugging Face Hub constitutes the central repository of the NLP community. It hosts over 300,000 models, 50,000 datasets, and thousands of demo applications (Spaces).
+
+\section{Authentication: The CLI}
+To interact with the Hub (uploading models), you need to authenticate. The command-line interface (CLI) is the easiest way to do this.
+
+\begin{lstlisting}[language=bash, caption=Login via Terminal]
+$ huggingface-cli login
+
+# You will be asked to enter your token from:
+# https://huggingface.co/settings/tokens
+\end{lstlisting}
+
+\begin{infobox}[title=Git Integration]
+    Under the hood, every model on the Hub is a Git repository. You can \texttt{git clone}, \texttt{git add}, and \texttt{git push} large model files (using Git LFS) just like you would with code.
+\end{infobox}
+
+\section{Model Cards: Documentation Matters}
+A model without documentation is useless. The "Model Card" is the \texttt{README.md} file of your repository. It contains:
+\begin{itemize}
+    \item \textbf{Model Description}: What does it do?
+    \item \textbf{Intended Use}: What are the valid use cases?
+    \item \textbf{Limitations}: Bias and risks.
+    \item \textbf{Training Data}: What data was it trained on?
+\end{itemize}
+
+\subsection{Metadata tags}
+Model cards start with a YAML header that helps the Hub filter your model.
+\begin{verbatim}
+---
+language: en
+tags:
+- text-classification
+- pytorch
+datasets:
+- glue
+metrics:
+- accuracy
+---
+\end{verbatim}
+
+\section{Hugging Face Spaces}
+Spaces are slightly different from Model repos. They are designed to host \textit{running applications}.
+
+\subsection{SDKs: Gradio vs Streamlit}
+\begin{itemize}
+    \item \textbf{Gradio}: Built by Hugging Face. Extremely simple, "Python-function-to-UI" approach. Best for quick demos.
+    \item \textbf{Streamlit}: More flexible, dashboard-oriented. Great for data exploration apps.
+\end{itemize}
+
+\begin{lstlisting}[language=Python, caption=A Full Gradio App]
+import gradio as gr
+from transformers import pipeline
+
+classifier = pipeline("sentiment-analysis")
+
+def predict(text):
+    return classifier(text)[0]
+
+# Launch the interface
+gr.Interface(
+    fn=predict, 
+    inputs="text", 
+    outputs="label",
+    title="My Sentiment Analyzer"
+).launch()
+\end{lstlisting}
+
+\section{Conclusion}
+You have now journeyed from the basics of tokenization to training your own models and sharing them with the world. The Hugging Face ecosystem is vast, but you have the keys to explore it.
+
+\begin{center}
+    \textit{"The magic of AI is not in the models, but in what you build with them."}
+\end{center}

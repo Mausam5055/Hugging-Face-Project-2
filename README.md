@@ -166,6 +166,20 @@ pip install -r requirements.txt
     - **Wait**: Processing time depends on CPU speed (approx 10-30s for short sentences).
     - **Output**: Play the audio directly or download it.
 
+### 🗣️ Supported Languages
+
+Suno Bark officially supports the following languages. Other languages (like Bengali) may not work correctly or might produce an English accent.
+
+| Language | Code | Language   | Code |
+| :------- | :--- | :--------- | :--- |
+| English  | `en` | Hindi      | `hi` |
+| Spanish  | `es` | French     | `fr` |
+| German   | `de` | Italian    | `it` |
+| Japanese | `ja` | Korean     | `ko` |
+| Polish   | `pl` | Portuguese | `pt` |
+| Russian  | `ru` | Turkish    | `tr` |
+| Chinese  | `zh` |            |      |
+
 ---
 
 ## ⚠️ Troubleshooting & Limitations
