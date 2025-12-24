@@ -42,20 +42,20 @@ The system follows a modular **Model-View-Controller (MVC)**-like pattern, separ
 
 ```mermaid
 graph TD
-    User([End User]) -->|Input Text| UI[Gradio Interface (app.py)]
-    UI -->|Validates Input| Controller[Logic Controller]
+    User(["End User"]) -->|Input Text| UI["Gradio Interface (app.py)"]
+    UI -->|Validates Input| Controller["Logic Controller"]
 
     subgraph "Backend Engine (tts/bark_tts.py)"
-        Controller -->|Request Audio| TTS[BarkTTS Handle]
-        TTS -->|Check Cache| Loader[Model Loader]
-        Loader -->|Load Weights| Models[(Suno Bark Models)]
-        Models -->|Raw Inference| Transformer[Transformer Network]
-        Transformer -->|Semantic->Coarse->Fine| AudioGen[Audio Generator]
+        Controller -->|Request Audio| TTS["BarkTTS Handle"]
+        TTS -->|Check Cache| Loader["Model Loader"]
+        Loader -->|Load Weights| Models[("Suno Bark Models")]
+        Models -->|Raw Inference| Transformer["Transformer Network"]
+        Transformer -->|Semantic->Coarse->Fine| AudioGen["Audio Generator"]
     end
 
     subgraph "Data Processing (utils/audio_utils.py)"
-        AudioGen -->|Numpy Array| Processor[Audio Processor]
-        Processor -->|Normalization| WAV[WAV Encoder]
+        AudioGen -->|Numpy Array| Processor["Audio Processor"]
+        Processor -->|Normalization| WAV["WAV Encoder"]
     end
 
     WAV -->|Return File| UI
