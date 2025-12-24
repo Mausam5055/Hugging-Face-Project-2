@@ -1,0 +1,6 @@
+torch
+bark
+soundfile
+gradio
+scipy
+numpy
