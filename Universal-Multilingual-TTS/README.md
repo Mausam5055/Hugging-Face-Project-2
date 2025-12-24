@@ -1,117 +1,174 @@
-# Universal Multilingual Text-to-Speech (Offline)
+# 🌍 Universal Multilingual Text-to-Speech (Offline)
 
-> **Note**: This project is currently under active development.
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
+![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey?style=for-the-badge)
 
-## Project Overview
+> **"Turning Text into Lifelike Speech, Anywhere, Anytime."**
 
-Universal Multilingual Text-to-Speech is a locally hosted, offline-capable application that generates natural-sounding speech from text in various languages. It leverages the Suno Bark model to provide high-quality audio without relying on cloud APIs or paid services.
+**Author**: **Mausam Kar**
 
-## Features
+---
 
-- **Multilingual Support**: Automatically handles input in multiple languages (English, Hindi, Spanish, etc.).
-- **Offline Capability**: Fully functional offline after the initial model download.
-- **Privacy-Focused**: Runs entirely on your local machine; no data is sent to the cloud.
-- **Cost-Free**: Uses open-source models and libraries.
+## 📑 Table of Contents
 
-## System Requirements
+1. [Project Overview](#-project-overview)
+2. [Key Features](#-key-features)
+3. [System Architecture](#-system-architecture)
+4. [Technology Stack](#-technology-stack)
+5. [Installation Guide](#-installation-guide)
+6. [Usage Instructions](#-usage-instructions)
+7. [Troubleshooting](#-troubleshooting)
+8. [License](#-license)
 
-- **OS**: Windows (tested), Linux, macOS
-- **Python**: 3.10+
-- **RAM**: 8GB+ recommended (Bark models are memory intensive)
-- **Disk Space**: ~5GB+ for models and dependencies
-- **Internet**: Required only for the first run to download models.
+---
 
-## Installation
+## 📖 Project Overview
 
-1. **Clone or Download the Project**
-   Ensure you have the project files locally.
+**Universal Multilingual Text-to-Speech** is a state-of-the-art, locally hosted application designed to generate human-quality speech from text. Unlike cloud-based solutions that require expensive API keys and internet connectivity, this project runs **entirely offline** on your personal computer.
 
-2. **Set Up Virtual Environment**
-   Run the following command in the project root:
+Leveraging the power of **Suno Bark**, a transformer-based generative audio model, it creates highly realistic speech, including non-verbal cues like laughter, hesitation, and breathing, across multiple languages.
 
-   ```bash
-   python -m venv venv
-   ```
+---
 
-3. **Activate Virtual Environment**
+## 🚀 Key Features
 
-   - Windows:
-     ```bash
-     venv\Scripts\activate
-     ```
-   - Linux/Mac:
-     ```bash
-     source venv/bin/activate
-     ```
+| Feature                     | Description                                                                                            | Status       |
+| :-------------------------- | :----------------------------------------------------------------------------------------------------- | :----------- |
+| **🌐 Multilingual Support** | Automatically handles input in **English, Hindi, Spanish, French**, and more without manual switching. | ✅ **Ready** |
+| **🔒 100% Offline**         | Runs locally. Your data never leaves your machine. Perfect for privacy-conscious users.                | ✅ **Ready** |
+| **💸 Completely Free**      | No subscriptions, no credits, no API limits. Built on open-source technology.                          | ✅ **Ready** |
+| **🧠 Smart Context**        | Understands code-switching (e.g., Hinglish) and emotional tone automatically.                          | ✅ **Ready** |
+| **⚡ Optimized**            | Configured to run on standard consumer hardware (CPU or GPU).                                          | ✅ **Ready** |
 
-4. **Install Dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+---
 
-## Usage
+## 🏗 System Architecture
 
-1. **Run the Application**
+The following diagram illustrates how the application processes your text and converts it into audio.
 
-   ```bash
-   venv\Scripts\python app.py
-   # Or on Linux/Mac:
-   # ./venv/bin/python app.py
-   ```
+```mermaid
+graph TD
+    user((User)) -->|Input Text| GUI[Gradio UI]
+    GUI -->|Send Request| Backend[Backend Controller]
 
-2. **Open the Interface**
-   The application will launch in your default web browser (usually at `http://127.0.0.1:7860`).
+    subgraph "Core Engine (Local)"
+        Backend -->|Processed Text| Bark[Suno Bark Model]
+        Bark -->|Context Hints| History[History Prompt]
+        History -->|Text + History| Inference[Transformer Inference]
+        Inference -->|Audio Array| Output[Raw Audio Processing]
+    end
 
-3. **Generate Speech**
-   - Type or paste your text into the text box.
-   - Click "Generate Speech".
-   - Listen to the output or download the WAV file.
+    Output -->|WAV Format| GUI
+    GUI -->|Playback/Download| user
 
-## Troubleshooting
+    style Bark fill:#f9f,stroke:#333,stroke-width:2px
+    style GUI fill:#bbf,stroke:#333,stroke-width:2px
+```
 
-- **First Run Slowness**: The first time you generate speech, the application downloads the Bark models (~5GB+). This depends on your internet speed and might take 10-30 minutes. Please be patient.
-- **Slow Generation**: If you are running on CPU, generation can be slow. A 10-second audio clip might take 10-30 seconds to generate depending on your CPU.
-- **Out of Memory**: If the app crashes with memory errors, try closing other applications. 8GB+ RAM is recommended.
+### 🔄 Data Flow
 
-## Architecture
+1.  **Input**: User types text into the Gradio web interface.
+2.  **Processing**: The application validates input and selects the appropriate model configuration.
+3.  **Inference**:
+    - **Text Processing**: Text is tokenized.
+    - **Semantic Generation**: The model predicts semantic tokens.
+    - **Acoustic Generation**: Semantic tokens are converted to audio waveforms.
+4.  **Output**: The raw numpy array is converted to a standard WAV file and sent back to the browser.
 
-1. **User Interface (Gradio)**:
+---
 
-   - Captures text input.
-   - Sends text to the backend TTS engine.
-   - Plays back the generated audio.
+## 🛠 Technology Stack
 
-2. **Backend (Bark TTS)**:
+This project is built using robust, industry-standard open-source libraries.
 
-   - `tts/bark_tts.py`: Handles model loading and inference.
-   - Uses `suno/bark` small/large models (auto-downloaded to cache).
-   - Generates raw audio arrays.
+| Component     | Technology                                                                        | Purpose                            |
+| :------------ | :-------------------------------------------------------------------------------- | :--------------------------------- |
+| **Language**  | ![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white) | Core programming logic.            |
+| **AI Model**  | **Suno Bark**                                                                     | Generative text-to-audio engine.   |
+| **Framework** | **PyTorch**                                                                       | Deep learning tensor computations. |
+| **Interface** | **Gradio**                                                                        | Web-based user interface.          |
+| **Audio**     | **SoundFile / SciPy**                                                             | Audio file processing and saving.  |
 
-3. **Utilities**:
-   - `utils/audio_utils.py`: Saves audio to WAV format.
+---
 
-## Model Information (Why Bark?)
+## 📥 Installation Guide
 
-We use **Suno Bark** because:
+Follow these steps to set up the project on your local machine.
 
-- It is **Transformer-based**, allowing for highly realistic, non-monotonic speech.
-- It supports **multilingual generation** out of the box without needing separate models for each language.
-- It can generate **non-speech sounds** (laughs, sighs) if prompted, adding realism.
-- It is **fully open-source** (MIT license).
+### Prerequisites
 
-> **Note on Memory**: By default, this app uses the **Small** version of Bark models to ensure it runs on standard consumer hardware (preventing Out-Of-Memory errors).
+- **Python 3.10+** installed.
+- **Git** (optional, for cloning).
+- **8GB+ RAM** (Recommended).
 
-## Offline Usage
+### Step-by-Step Setup
 
-After the first successful generation (which downloads the models), the application works completely offline.
-The models are stored in your local cache (`~/.cache/suno/` by default).
+1.  **Clone the Repository**
 
-## Limitations
+    ```bash
+    git clone https://github.com/your-repo/Universal-Multilingual-TTS.git
+    cd Universal-Multilingual-TTS
+    ```
 
-- **Generation Speed**: On CPU, generation can be slow (roughly 1:1 or slower depending on hardware).
-- **VRAM/RAM Usage**: Requires significant memory (~4GB+ VRAM if GPU used, or decent system RAM).
-- **Long Text**: Long text might need to be split into sentences for best results.
+2.  **Create Virtual Environment**
+    Isolate dependencies to avoid conflicts.
 
-## License
+    ```bash
+    # Windows
+    python -m venv venv
+    venv\Scripts\activate
 
-MIT License
+    # Linux / macOS
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+
+3.  **Install Dependencies**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+---
+
+## 🎮 Usage Instructions
+
+1.  **Start the Application**
+    Run the following command in your terminal:
+
+    ```bash
+    python app.py
+    ```
+
+2.  **Access the Interface**
+    Open your browser and navigate to:
+    👉 **[http://127.0.0.1:7860](http://127.0.0.1:7860)**
+
+3.  **Generate Speech**
+    - **Input**: "नमस्ते दोस्तो, आप कैसे हैं?" (Hindi) or "Hello friends, how are you?" (English).
+    - **Action**: Click the **Generate Speech** button.
+    - **Result**: Listen to the generated audio or download the `.wav` file.
+
+---
+
+## ❓ Troubleshooting
+
+| Issue               | Possible Cause   | Solution                                                                                               |
+| :------------------ | :--------------- | :----------------------------------------------------------------------------------------------------- |
+| **Slow Generation** | CPU usage        | Inference on CPU is slower than GPU. Be patient, or use a machine with an NVIDIA GPU (CUDA).           |
+| **Long First Run**  | Model Download   | The app downloads ~2GB of models on the first run. Ensure you have a stable internet connection.       |
+| **Out of Memory**   | Large Models     | By default, this app uses `small` models to prevent crashes. Close other background apps.              |
+| **PyTorch Errors**  | Version mismatch | Ensure you installed requirements exactly as specified. We include a patch for newer PyTorch versions. |
+
+---
+
+## 📜 License
+
+This project is open-source and available under the **MIT License**.
+
+---
+
+<p align="center">
+  Built with ❤️ by <b>Mausam Kar</b>
+</p>

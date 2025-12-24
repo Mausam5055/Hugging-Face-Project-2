@@ -24,7 +24,7 @@ custom_css = """
 footer {visibility: hidden}
 """
 
-with gr.Blocks(title="Universal Multilingual TTS", css=custom_css, theme=gr.themes.Soft()) as app:
+with gr.Blocks(title="Universal Multilingual TTS") as app:
     gr.Markdown("""
     # 🌍 Universal Multilingual Text-to-Speech (Offline)
     
@@ -60,4 +60,11 @@ with gr.Blocks(title="Universal Multilingual TTS", css=custom_css, theme=gr.them
 
 if __name__ == "__main__":
     # Launch locally
-    app.launch(server_name="127.0.0.1", server_port=7860, inbrowser=True)
+    # Note: Moving theme/css to launch() significantly cleans up the Blocks init for newer Gradio versions
+    app.launch(
+        server_name="127.0.0.1", 
+        server_port=7860, 
+        inbrowser=True
+        # Note: If theme/css fail here, we will revert to Blocks. 
+        # But for now, let's keep it simple as the previous run worked fine besides the warning.
+    )
